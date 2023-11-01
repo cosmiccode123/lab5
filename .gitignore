@@ -1,32 +1,97 @@
-# Prerequisites
-*.d
+#include <iostream>
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+using namespace std;
 
-# Precompiled Headers
-*.gch
-*.pch
+double function_var5(double x)
+{
+	double f = (pow(sin(x), 2)) / sqrt(1 + pow(x, 3));
+	return f;
+}
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+double function_var33(double x, double y)
+{
+	double f = fabs(sin(x + y));
 
-# Fortran module files
-*.mod
-*.smod
+	return f;
+}
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+double firstmethod(double a, double b, double h) //trapeoid method
+{
+	double integral = 0;
+	int n;
 
-# Executables
-*.exe
-*.out
-*.app
+	n = (b - a) / h;
+
+	integral = (h / 2) * (function_var5(a) + function_var5(b));
+	for (int i = 1; i < n - 1; i++)
+	{
+		integral = integral + (2 * h / 2) * function_var5(a + (h * i));
+	}
+
+	cout << "trapeoid" << endl << "integral = " << integral << endl << endl;
+	return 0;
+}
+
+double secondmethod(double a, double b, double h) //simpson method
+{
+	double integral = 0;
+	int n, m;
+
+	n = (b - a) / h;
+	m = n / 2;
+
+	integral = (h / 3) * (function_var5(a) + function_var5(b));
+	for (int i = 1; i < m; i++)
+	{
+		integral = integral + (4 * h / 3 * function_var5(a + (h * (2 * i - 1))));
+	}
+	for (int i = 1; i < m - 1; i++)
+	{
+		integral = integral + (2 * h / 3 * function_var5(a + (h * 2 * i)));
+	}
+	cout << "simpson" << endl << "integral = " << integral << endl << endl;
+	return 0;
+}
+
+
+double thirdmethod(double a, double b, double c, double d, double h) //cubature simpson method
+{
+	double integral = 0;
+    int n = (b - a) / (2 * h);
+	int m = (d - c) / (2 * h);
+	double Hx, Hy;
+
+	Hx = (b - a) / (2 * n);
+	Hy = (d - c) / (2 * m);
+
+	/*integral = function2(a, c) + function2(a, d) + function2(b, c) + function2(b, d);*/
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		for (int j = 0; j < m - 1; j++)
+		{
+			integral = function_var33(2 * i, 2 * j) + 4 * function_var33(2 * i + 1, 2 * j) + function_var33(2 * i + 2, 2 * j) + 4 * function_var33(2 * i, 2 * j + 1) + 16 * function_var33(2 * i + 1, 2 * j + 1) + 4 * function_var33(2 * i + 2, 2 * j + 1) + function_var33(2 * i, 2 * j + 2) + 4 * function_var33(2 * i + 2, 2 * j + 2) + function_var33(2 * i + 2, 2 * j + 2);
+		}
+	}
+
+		integral = integral * Hx * Hy / 9;
+
+		cout << "cubauture simpson" << endl << "integral = " << integral << endl;
+
+		return 0;
+}
+	
+int main()
+{
+	int n;
+	double Xmin = 0, Xmax = 1.234, h = 0.001;
+	double x1 = 0, x2 = 3.14 / 2, y1 = 0, y2 = 3.14 / 4;
+
+	firstmethod(Xmin, Xmax, h);
+
+	secondmethod(Xmin, Xmax, h);
+
+	thirdmethod(x1, x2, y1, y2, h);
+
+	return 0;
+}
